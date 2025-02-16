@@ -5,6 +5,7 @@
 #include "window.h"
 #include <raylib.h>
 #include <stdio.h>
+#include <string.h>
 
 void init_latex(const char* to_replace) {
     FILE *sed_output, *tectonic_input;
@@ -12,7 +13,7 @@ void init_latex(const char* to_replace) {
     char sed_command[1024];
 
     snprintf(sed_command, sizeof(sed_command),
-             "sed 's/<BEGIN_REPLACE>/%s/g' test.tex", to_replace);
+             "sed 's/<BEGIN_REPLACE>/%s/g; s/#/\\\\/g' test.tex", to_replace);
 
     sed_output = popen(sed_command, "r");
     tectonic_input = popen("tectonic -", "w");
@@ -40,7 +41,7 @@ int main(void) {
     ECS_IMPORT(state.world, Transform);
     ECS_IMPORT(state.world, Renderer);
 
-    init_latex("\\\\alpha^2+ b^2 = c^2");
+    init_latex("#displaystyle #int_a^b f(x) dx = 2");
     Texture2D tex = LoadTexture("testAuto.png");
 
     while (!WindowShouldClose()) {
