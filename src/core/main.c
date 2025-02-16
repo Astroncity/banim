@@ -6,20 +6,35 @@
 #include <raylib.h>
 #include <stdio.h>
 
-void draw_splash(void) {
-    const char* splash_text = "Hello Engine!";
-    v2 len = MeasureTextEx(GetFontDefault(), splash_text, 20, 1);
+void init_latex(const char* to_replace) {
+    FILE *sed_output, *tectonic_input;
+    char buffer[1024];
+    char sed_command[1024];
 
-    Vector2 position = {state.screenWidth / 2 - len.x / 2,
-                        state.screenHeight / 2 - len.y / 2};
-    DrawTextEx(GetFontDefault(), splash_text, position, 20, 1, WHITE);
+    snprintf(sed_command, sizeof(sed_command),
+             "sed 's/<BEGIN_REPLACE>/%s/g' test.tex", to_replace);
+
+    sed_output = popen(sed_command, "r");
+    tectonic_input = popen("tectonic -", "w");
+
+    while (fgets(buffer, sizeof(buffer), sed_output) != NULL) {
+        fputs(buffer, tectonic_input);
+    }
+
+    system("pdf2svg texput.pdf testAuto.svg");
+
+    pclose(sed_output);
+    pclose(tectonic_input);
 }
 
 int main(void) {
-    init_engine("Engine Template");
+    init_engine("Banim");
 
     ECS_IMPORT(state.world, Transform);
     ECS_IMPORT(state.world, Renderer);
+
+    init_latex("a^2 + b^2 = c^2");
+    Texture2D tex = LoadTexture("testAuto.svg");
 
     while (!WindowShouldClose()) {
         update_mouse();
@@ -27,7 +42,8 @@ int main(void) {
         BeginTextureMode(*state.screen);
         ClearBackground(BLACK);
 
-        draw_splash();
+        DrawTexture(tex, 0, 0, WHITE);
+
         ecs_progress(state.world, GetFrameTime());
 
         EndTextureMode();
