@@ -8,8 +8,8 @@ void init_engine(const char* window_title) {
     is_init = true;
 
     state.world = ecs_init();
-    state.screenWidth = 640;
-    state.screenHeight = 360;
+    state.screenWidth = 1920;
+    state.screenHeight = 1080;
     state.font = LoadFontEx("assets/fonts/spaceMono.ttf", 128, 0, 0);
     state.mouse = malloc(sizeof(v2));
     state.screen = init_window(window_title);

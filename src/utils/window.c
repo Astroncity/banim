@@ -53,7 +53,7 @@ RenderTexture2D* init_window(const char* title) {
     InitAudioDevice();
     SetMasterVolume(1);
     SetTargetFPS(60);
-    SetWindowSize(state.screenWidth * 2, state.screenHeight * 2);
+    SetWindowSize(state.screenWidth, state.screenHeight);
     target = LoadRenderTexture(state.screenWidth, state.screenHeight);
     SetTextureFilter(target.texture, TEXTURE_FILTER_POINT);
     return &target;

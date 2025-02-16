@@ -21,10 +21,17 @@ void init_latex(const char* to_replace) {
         fputs(buffer, tectonic_input);
     }
 
-    system("pdf2svg texput.pdf testAuto.svg");
-
     pclose(sed_output);
     pclose(tectonic_input);
+
+    system("magick -density 600 texput.pdf -quality 100 testAuto.png");
+}
+
+void cleanup_latex() {
+    system("rm testAuto.png");
+    system("rm texput.pdf");
+    system("rm test.aux");
+    system("rm test.log");
 }
 
 int main(void) {
@@ -33,8 +40,8 @@ int main(void) {
     ECS_IMPORT(state.world, Transform);
     ECS_IMPORT(state.world, Renderer);
 
-    init_latex("a^2 + b^2 = c^2");
-    Texture2D tex = LoadTexture("testAuto.svg");
+    init_latex("\\\\alpha^2+ b^2 = c^2");
+    Texture2D tex = LoadTexture("testAuto.png");
 
     while (!WindowShouldClose()) {
         update_mouse();
@@ -42,7 +49,7 @@ int main(void) {
         BeginTextureMode(*state.screen);
         ClearBackground(BLACK);
 
-        DrawTexture(tex, 0, 0, WHITE);
+        DrawTextureEx(tex, (v2){0, 0}, 0, 1.5, WHITE);
 
         ecs_progress(state.world, GetFrameTime());
 
@@ -50,6 +57,7 @@ int main(void) {
         draw_window();
     }
 
+    cleanup_latex();
     CloseWindow();
     return 0;
 }
