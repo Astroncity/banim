@@ -7,6 +7,10 @@
 #include <stdio.h>
 #include <string.h>
 
+typedef struct Keyframe {
+    u32 step;
+} Keyframe;
+
 void init_latex(const char* to_replace) {
     FILE *sed_output, *tectonic_input;
     char buffer[1024];
@@ -50,7 +54,7 @@ int main(void) {
         BeginTextureMode(*state.screen);
         ClearBackground(BLACK);
 
-        DrawTextureEx(tex, (v2){0, 0}, 0, 1.5, WHITE);
+        DrawTextureEx(tex, (v2){0, 0}, 0, 0.5, WHITE);
 
         ecs_progress(state.world, GetFrameTime());
 
